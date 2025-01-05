@@ -29,6 +29,7 @@ namespace Otlob.APIs.Controllers
                 return NotFound(new {Message="Not found",StatusCode=404});
             }
             return Ok(product);
+
         }
     }
 }
