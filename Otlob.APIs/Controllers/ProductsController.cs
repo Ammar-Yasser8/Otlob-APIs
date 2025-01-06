@@ -14,6 +14,7 @@ namespace Otlob.APIs.Controllers
             _productRepository = productRepository;
         }
         // GET: api/Products
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
             var products = await _productRepository.GetAllAsync();
@@ -26,7 +27,7 @@ namespace Otlob.APIs.Controllers
             var product = await _productRepository.GetAsync(id);
             if (product == null)
             {
-                return NotFound(new {Message="Not found",StatusCode=404});
+                return NotFound(new { Message = "Not found", StatusCode = 404 });
             }
             return Ok(product);
 
