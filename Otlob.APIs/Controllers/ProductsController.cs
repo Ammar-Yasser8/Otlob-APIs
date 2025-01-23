@@ -17,14 +17,14 @@ namespace Otlob.APIs.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            var products = await _productRepository.GetAllAsync();
+            var products = await _productRepository.GetAllAsync(Includes: "ProductBrand,ProductCategory");
             return Ok(products);    
         }
         // GET: api/Products/id
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _productRepository.GetAsync(id);
+            var product = await _productRepository.GetAsync(product => product.Id == id , Includes:"ProductBrand,ProductCategory");
             if (product == null)
             {
                 return NotFound(new { Message = "Not found", StatusCode = 404 });
