@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Otlob.APIs.Helper;
 using Otlob.Core.IRepositories;
 using Otlob.Repository.Data;
 using Otlob.Repository.Repositories;
@@ -22,7 +23,7 @@ namespace Otlob.APIs
                     .GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
             var app = builder.Build();
 
             // Create a scope to get an instance of the DbContext Explicitly
@@ -46,6 +47,7 @@ namespace Otlob.APIs
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 
