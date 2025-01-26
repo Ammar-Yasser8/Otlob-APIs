@@ -15,8 +15,15 @@ namespace Otlob.Repository.Repositories
         {
             var query = inputQuery.AsQueryable();
             if(spec.Criteria != null)
-               query.Where(spec.Criteria);  
-            query=spec.Includes.Aggregate(query,(currentQuery, includeExpression) => currentQuery.Include(includeExpression)); 
+               query.Where(spec.Criteria);
+            // Apply sorting
+            if (spec.OrderBy != null)
+                query = query.OrderBy(spec.OrderBy); // Assign result back to query
+            else if (spec.OrderByDescending != null)
+                query = query.OrderByDescending(spec.OrderByDescending);
+
+
+            query =spec.Includes.Aggregate(query,(currentQuery, includeExpression) => currentQuery.Include(includeExpression)); 
 
             return query;
         }

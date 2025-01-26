@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Otlob.APIs.DTOs;
 using Otlob.Core.IRepositories;
 using Otlob.Core.Models;
+using Otlob.Core.Specification;
+using Otlob.Core.Specification.ProductSpecifications;
 
 namespace Otlob.APIs.Controllers
 {
@@ -25,22 +27,23 @@ namespace Otlob.APIs.Controllers
         }
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductToReverseDto>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<ProductToReverseDto>>> GetProducts(string sort)
         {
-            var products = await _productRepository.GetAllAsync(Includes: "ProductBrand,ProductCategory");
+            var spec = new ProductWithBrandandCategory(sort);    
+            var products = await _productRepository.GetAllAsyncWithSpec(spec);
             return Ok(_mapper.Map<IEnumerable<Product> , IEnumerable<ProductToReverseDto>>(products));    
         }
         // GET: api/Products/id
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductToReverseDto>> GetProduct(int id)
         {
-            var product = await _productRepository.GetAsync(product => product.Id == id , Includes:"ProductBrand,ProductCategory");
+          var spec = new BaseSpecification<Product>(x => x.Id == id);
+            var product = await _productRepository.GetAsyncWithSpec(spec);
             if (product == null)
             {
                 return NotFound(new { Message = "Not found", StatusCode = 404 });
             }
-            return Ok(_mapper.Map<Product,ProductToReverseDto>(product));
-
+            return Ok(_mapper.Map<Product, ProductToReverseDto>(product));
         }
         // Get : api/Products/brands
         [HttpGet("brands")]
@@ -53,7 +56,7 @@ namespace Otlob.APIs.Controllers
         [HttpGet("brands/{id}")]
         public async Task<ActionResult<ProductBrand>> GetProductBrand(int id)
         {
-            var brand = await _productBrandRepository.GetAsync(brand => brand.Id == id);
+            var brand = await _productBrandRepository.GetAsync(id);
             if (brand == null)
             {
                 return NotFound(new { Message = "Not found", StatusCode = 404 });
@@ -72,7 +75,7 @@ namespace Otlob.APIs.Controllers
         [HttpGet("categories/{id}")]
         public async Task<ActionResult<ProductCategory>> GetProductCategory(int id)
         {
-            var category = await _productCategoryRepository.GetAsync(category => category.Id == id);
+            var category = await _productCategoryRepository.GetAsync(id);
             if (category == null)
             {
                 return NotFound(new { Message = "Not found", StatusCode = 404 });

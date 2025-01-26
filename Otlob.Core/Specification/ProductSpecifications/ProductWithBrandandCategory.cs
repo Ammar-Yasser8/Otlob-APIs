@@ -9,7 +9,7 @@ namespace Otlob.Core.Specification.ProductSpecifications
 {
     public class ProductWithBrandandCategory : BaseSpecification<Product>
     {
-        public ProductWithBrandandCategory(string sort) 
+        public ProductWithBrandandCategory(string sort) :base()
         {
             Includes.Add(p => p.ProductBrand);
             Includes.Add(p=> p.ProductCategory);
@@ -18,10 +18,10 @@ namespace Otlob.Core.Specification.ProductSpecifications
                 switch (sort)
                 {
                     case "priceAsc":
-                            AddOrderBy(p => p.Price);
+                        AddOrderBy(p => p.Price);
                         break;
 
-                    case "priceDesc": 
+                    case "priceDesc":
                         AddOrderByDescending(p => p.Price);
                         break;
                     default:
@@ -29,7 +29,7 @@ namespace Otlob.Core.Specification.ProductSpecifications
                         break;
                 }
             }
-            else 
+            else
                 AddOrderBy(p => p.Name);
         }
         public ProductWithBrandandCategory(int id)
