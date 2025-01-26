@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Otlob.Core.IRepositories;
 using Otlob.Core.Models;
+using Otlob.Core.Specification;
 using Otlob.Repository.Data;
 using System;
 using System.Collections.Generic;
@@ -21,39 +22,25 @@ namespace Otlob.Repository.Repositories
 
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? Predicate, string? Includes)
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            var query = _context.Set<T>().AsQueryable();
-            if (Predicate != null)
-            {
-                query = query.Where(Predicate);
-            }
-            if (Includes != null)
-            {
-                foreach (var include in Includes.Split(','))
-                {
-                    query = query.Include(include);
-                }
-            }
-            return await query.ToListAsync();
+            return await _context.Set<T>().ToListAsync();
         }
 
-        public Task<T?> GetAsync(Expression<Func<T, bool>>? Predicate, string? Includes)
+        public async Task<IEnumerable<T>> GetAllAsyncWithSpec(ISpecification<T> spec)
         {
-            var query = _context.Set<T>().AsQueryable();
-            if (Predicate != null)
-            {
-                query = query.Where(Predicate);
-            }
-            if (Includes != null)
-            {
-                foreach (var include in Includes.Split(','))
-                {
-                    query = query.Include(include);
-                }
+            return await SpecificationEvaluator<T>.GetQuery(_context.Set<T>(), spec).ToListAsync();
+        }
 
-            }
-            return query.SingleOrDefaultAsync();
+        public async Task<T?> GetAsync(int id)
+        {
+           return await _context.Set<T>().FindAsync(id);
+        }
+
+        public async Task<T?> GetAsyncWithSpec(ISpecification<T> spec)
+        {
+            return await SpecificationEvaluator<T>.GetQuery(_context.Set<T>(), spec).FirstOrDefaultAsync();
+
         }
     }
 }
