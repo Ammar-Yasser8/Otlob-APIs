@@ -37,7 +37,7 @@ namespace Otlob.APIs.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductToReverseDto>> GetProduct(int id)
         {
-          var spec = new BaseSpecification<Product>(x => x.Id == id);
+          var spec = new ProductWithBrandandCategory(id);
             var product = await _productRepository.GetAsyncWithSpec(spec);
             if (product == null)
             {
