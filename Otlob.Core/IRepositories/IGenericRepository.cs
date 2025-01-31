@@ -14,6 +14,8 @@ namespace Otlob.Core.IRepositories
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> GetAllAsyncWithSpec(ISpecification<T> spec);
         Task<T?> GetAsyncWithSpec(ISpecification<T> spec);
+        Task<int> GetWithCountAsync(ISpecification<T> spec);
+        Task<int> CountAsync(ISpecification<T> spec);
 
     }
 }

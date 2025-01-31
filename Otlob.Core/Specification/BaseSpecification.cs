@@ -17,6 +17,12 @@ namespace Otlob.Core.Specification
 
         public Expression<Func<T, object>> OrderByDescending { get; set; }
 
+        public bool IsPagingEnabled { get; set; } = false;
+
+        public int Skip { get; set; }
+
+        public int Take { get; set; }
+
         public BaseSpecification()
         {
             
@@ -33,6 +39,12 @@ namespace Otlob.Core.Specification
         {
             OrderByDescending = OrderByDescendingExpression ;
         }
+        public void ApplyPaging(int skip, int take)
+        {
+            Skip = skip;
+            Take = take;
+            IsPagingEnabled = true;
+        }   
 
     }
 }

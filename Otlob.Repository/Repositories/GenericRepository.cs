@@ -42,5 +42,18 @@ namespace Otlob.Repository.Repositories
             return await SpecificationEvaluator<T>.GetQuery(_context.Set<T>(), spec).FirstOrDefaultAsync();
 
         }
+        public async Task<int> CountAsync(ISpecification<T> spec)
+        {
+            return await SpecificationEvaluator<T>
+                .GetQuery(_context.Set<T>(), spec)
+                .CountAsync();
+        }
+
+        public async Task<int> GetWithCountAsync(ISpecification<T> spec)
+        {
+            return await SpecificationEvaluator<T>
+                .GetQuery(_context.Set<T>(), spec)
+                .CountAsync();
+        }
     }
 }

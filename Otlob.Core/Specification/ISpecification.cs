@@ -17,10 +17,15 @@ namespace Otlob.Core.Specification
         // OrderBy is a function that takes a T and returns an Sorted T 
         // It is used to order entities
         public Expression<Func<T, object>> OrderBy { get; }
-        // OrderByDescending is a function that takes a queryable and returns an IOrderedQueryable
         // It is used to order entities in descending order
         public Expression<Func<T, object>> OrderByDescending { get; }
         // IsPagingEnabled is a boolean that is used to enable or disable paging
+        public bool IsPagingEnabled { get; }
+        // Skip is an integer that is used to skip a number of entities
+        public int Skip { get; }
+        // Take is an integer that is used to take a number of entities
+        public int Take { get; }
+
 
     }
 }

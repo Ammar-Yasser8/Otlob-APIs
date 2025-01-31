@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Otlob.APIs.DTOs;
+using Otlob.APIs.Helper;
 using Otlob.Core.IRepositories;
 using Otlob.Core.Models;
 using Otlob.Core.Specification;
@@ -27,11 +28,14 @@ namespace Otlob.APIs.Controllers
         }
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductToReverseDto>>> GetProducts(string sort)
+        public async Task<ActionResult<Pagination<ProductToReverseDto>>> GetProducts([FromQuery] ProductSpecParams specParams)
         {
-            var spec = new ProductWithBrandandCategory(sort);    
+            var spec = new ProductWithBrandandCategory(specParams);
             var products = await _productRepository.GetAllAsyncWithSpec(spec);
-            return Ok(_mapper.Map<IEnumerable<Product> , IEnumerable<ProductToReverseDto>>(products));    
+            var countSpec = new ProductWithFiltersForCountSpecification(specParams);
+            var totalItems = await _productRepository.GetWithCountAsync(countSpec);
+            var data = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductToReverseDto>>(products);
+            return Ok(new Pagination<ProductToReverseDto>(specParams.PageIndex,specParams.PageSize, totalItems, data));
         }
         // GET: api/Products/id
         [HttpGet("{id}")]
@@ -45,44 +49,6 @@ namespace Otlob.APIs.Controllers
             }
             return Ok(_mapper.Map<Product, ProductToReverseDto>(product));
         }
-        // Get : api/Products/brands
-        [HttpGet("brands")]
-        public async Task<ActionResult<IEnumerable<ProductBrand>>> GetProductBrands()
-        {
-            var brands = await _productBrandRepository.GetAllAsync();
-            return Ok(brands);
-        }
-        // Get : api/Products/brands/id
-        [HttpGet("brands/{id}")]
-        public async Task<ActionResult<ProductBrand>> GetProductBrand(int id)
-        {
-            var brand = await _productBrandRepository.GetAsync(id);
-            if (brand == null)
-            {
-                return NotFound(new { Message = "Not found", StatusCode = 404 });
-            }
-            return Ok(brand);
-        }
-
-        // Get : api/Products/categories
-        [HttpGet("categories")]
-        public async Task<ActionResult<IEnumerable<ProductCategory>>> GetProductCategories()
-        {
-            var categories = await _productCategoryRepository.GetAllAsync();
-            return Ok(categories);
-        }
-        // Get : api/Products/categories/id
-        [HttpGet("categories/{id}")]
-        public async Task<ActionResult<ProductCategory>> GetProductCategory(int id)
-        {
-            var category = await _productCategoryRepository.GetAsync(id);
-            if (category == null)
-            {
-                return NotFound(new { Message = "Not found", StatusCode = 404 });
-            }
-            return Ok(category);
-        }
-
-
+       
     }
 }
