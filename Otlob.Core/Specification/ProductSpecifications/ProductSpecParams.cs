@@ -12,6 +12,7 @@ namespace Otlob.Core.Specification.ProductSpecifications
         public string? Sort { get; set; }
         public int? BrandId { get; set; }
         public int? CategoryId { get; set; }
+        public string? Search { get; set; }
         public int PageIndex { get; set; } = 1;
         private int pageSize;
 

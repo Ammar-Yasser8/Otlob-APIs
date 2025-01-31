@@ -11,6 +11,7 @@ namespace Otlob.Core.Specification.ProductSpecifications
     {
         public ProductWithFiltersForCountSpecification(ProductSpecParams specParams)
              : base(p =>
+            (string.IsNullOrEmpty(specParams.Search) || p.Name.ToLower().Contains(specParams.Search.ToLower())) &&
             (!specParams.BrandId.HasValue || p.BrandId == specParams.BrandId.Value) &&
             (!specParams.CategoryId.HasValue || p.CategoryId == specParams.CategoryId.Value)
         )
